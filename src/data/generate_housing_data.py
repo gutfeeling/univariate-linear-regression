@@ -21,6 +21,8 @@ def generate_fake_data(num_lines,
                 fh.write("{:,}\t".format(area))
             elif 0.05 <= random_number < 0.075:
                 fh.write("{:,}\t\t".format(area))
+            elif 0.075 <= random_number < 0.1:
+                fh.write("\t")
             else:
                 fh.write("{:,}    ".format(area))
             fh.write("{:,}\n".format(price))

@@ -1,6 +1,6 @@
 import argparse
 
-from src.data.preprocessing_helpers import row_to_list, convert_to_int
+from .preprocessing_helpers import row_to_list, convert_to_int
 
 
 def preprocess(input_file_path, output_file_path):
@@ -12,11 +12,15 @@ def preprocess(input_file_path, output_file_path):
             if row_as_list is None:
                 continue
             try:
-                row_as_int_list = [convert_to_int(number_with_commas) for number_with_commas in row_as_list]
+                area = convert_to_int(row_as_list[0])
             except ValueError:
                 continue
-            area = row_as_int_list[0]
-            price = row_as_int_list[1]
+            try:
+                price = convert_to_int(row_as_list[1])
+            except ValueError:
+                continue
+            if area is None or price is None:
+                continue
             output_file.write("{0}\t{1}\n".format(area, price))
 
 
