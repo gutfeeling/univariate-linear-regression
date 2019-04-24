@@ -1,3 +1,4 @@
+from math import cos, pi, sin
 import numpy as np
 import pytest
 
@@ -181,6 +182,24 @@ class TestModelTest(object):
                                                                                            actual
                                                                                            )
         assert actual == pytest.approx(expected), message
+
+    def test_on_circular_data(self):
+        theta = pi/4.0
+        test_input = np.array([[cos(theta), sin(theta)],
+                               [cos(2 * theta), sin(2 * theta)],
+                               [cos(3 * theta), sin(3 * theta)],
+                               [cos(4 * theta), sin(4 * theta)],
+                               [cos(5 * theta), sin(5 * theta)],
+                               [cos(6 * theta), sin(6 * theta)],
+                               [cos(7 * theta), sin(7 * theta)],
+                               [cos(8 * theta), sin(8 * theta)],
+                               ]
+                              )
+        actual = model_test(test_input, 0.0, 0.0)
+        message = ("model_test() should return 0 on circular data with center at 0 and fitted line y = 0, "
+                   "it actually returned {0}".format(actual)
+                   )
+        assert actual == pytest.approx(0.0), message
 
     def test_on_one_dimensional_array(self):
         test_input = np.array([1.0, 2.0, 3.0, 4.0])
