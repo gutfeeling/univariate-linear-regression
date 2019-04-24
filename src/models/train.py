@@ -21,11 +21,6 @@ def model_test(testing_set, slope, intercept):
                             dim
                             )
                          )
-    num_rows = testing_set.shape[0]
-    if num_rows < 2:
-        raise ValueError("The testing_set input must have at least 1 rows for testing to work, "
-                         "it actually has just {0}".format(num_rows)
-                         )
     num_cols = testing_set.shape[1]
     if num_cols != 2:
         raise ValueError("The testing_set input must have 2 columns for univariate linear regression. "
@@ -33,7 +28,8 @@ def model_test(testing_set, slope, intercept):
                          )
     actual_price = testing_set[:, 1]
     predicted_price = slope*testing_set[:, 0] + intercept
-    return 1 - np.var(predicted_price - actual_price) / np.var(actual_price)
+    residual_sum_of_squares = np.sum(np.square(predicted_price - actual_price)) / testing_set.shape[0]
+    return 1 - residual_sum_of_squares / np.var(actual_price)
 
 
 def train_model(training_set):
