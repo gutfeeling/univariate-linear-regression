@@ -226,3 +226,63 @@ class TestModelTest(object):
                                                                                actual_error_message
                                                                                )
         assert expected_error_message_fragment in actual_error_message, message
+
+
+@pytest.mark.xfail(reason="get_correlation_coefficient() is not implemented yet")
+class TestGetCorrelationCoefficient(object):
+    def test_on_perfect_positive(self):
+        test_input = np.array([[1.0, 3.0],
+                               [2.0, 5.0],
+                               [3.0, 7.0],
+                               ]
+                              )
+        expected = 1.0
+        actual = get_correlation_coefficient(test_input)
+        message = "get_correlation_coefficient({0}) should return {1}, but it actually returned {2}".format(test_input,
+                                                                                                            expected,
+                                                                                                            actual
+                                                                                                            )
+        assert actual == pytest.approx(expected), message
+
+    def test_on_perfect_negative(self):
+        test_input = np.array([[1.0, -2.0],
+                               [2.0, -5.0],
+                               [3.0, -8.0],
+                               ]
+                              )
+        expected = -1.0
+        actual = get_correlation_coefficient(test_input)
+        message = "get_correlation_coefficient({0}) should return {1}, but it actually returned {2}".format(test_input,
+                                                                                                            expected,
+                                                                                                            actual
+                                                                                                            )
+        assert actual == pytest.approx(expected), message
+
+    def test_on_one_dimensional_array(self):
+        test_input = np.array([1.0, 2.0, 3.0, 4.0])
+        with pytest.raises(ValueError) as exc_info:
+            get_correlation_coefficient(test_input)
+        expected_error_message_fragment = ("The data input must be two dimensional. "
+                                           "Got 1 dimensional array instead!"
+                                           )
+        actual_error_message = str(exc_info)
+        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
+                                                                               actual_error_message
+                                                                               )
+        assert expected_error_message_fragment in actual_error_message, message
+
+    def test_on_three_columns(self):
+        test_input = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        with pytest.raises(ValueError) as exc_info:
+            get_correlation_coefficient(test_input)
+        expected_error_message_fragment = ("The data input must have 2 columns for finding correlation "
+                                           "coefficient. It actually has 3 columns"
+                                           )
+        actual_error_message = str(exc_info)
+        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
+                                                                               actual_error_message
+                                                                               )
+        assert expected_error_message_fragment in actual_error_message, message
+
+
+
