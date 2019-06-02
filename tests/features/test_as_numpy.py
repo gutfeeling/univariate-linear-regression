@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from src import get_data_as_numpy_array
+from features.as_numpy import get_data_as_numpy_array
 
 
 @pytest.fixture
@@ -59,21 +59,11 @@ class TestGetDataAsNumpyArray(object):
         num_columns = 3
         with pytest.raises(ValueError) as exc_info:
             get_data_as_numpy_array(clean_data_file_path, num_columns)
-        expected_error_message_fragment = "Line 1 of {0} does not have {1} columns".format(clean_data_file_path,
-                                                                                           num_columns
-                                                                                           )
-        actual_error_message = str(exc_info)
-        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
-                                                                               actual_error_message
-                                                                               )
-        assert expected_error_message_fragment in actual_error_message, message
+        expected_error_msg = "Line 1 of {0} does not have {1} columns".format(clean_data_file_path, num_columns)
+        assert exc_info.match(expected_error_msg)
 
     def test_with_non_float_value(self, dirty_data_file_path):
         with pytest.raises(ValueError) as exc_info:
             get_data_as_numpy_array(dirty_data_file_path, 2)
-        expected_error_message_fragment = "Line 3 of {0} is badly formatted".format(dirty_data_file_path)
-        actual_error_message = str(exc_info)
-        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
-                                                                               actual_error_message
-                                                                               )
-        assert expected_error_message_fragment in actual_error_message, message
+        expected_error_msg = "Line 3 of {0} is badly formatted".format(dirty_data_file_path)
+        assert exc_info.match(expected_error_msg)

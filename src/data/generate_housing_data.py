@@ -15,16 +15,12 @@ def generate_fake_data(num_lines,
             area = int(random.normalvariate(average_house_size, house_size_std))
             price = int(average_price_per_square_feet*area + price_randomness_range*2*(1 + random.uniform(-1, 1)))
             random_number = random.random()
-            if random_number < 0.025:
+            if random_number < 0.05:
                 fh.write("{:,}".format(area))
-            elif 0.025 <= random_number < 0.05:
-                fh.write("{:,}\t".format(area))
-            elif 0.05 <= random_number < 0.075:
+            elif 0.05 <= random_number < 0.1:
                 fh.write("{:,}\t\t".format(area))
-            elif 0.075 <= random_number < 0.1:
-                fh.write("\t")
             else:
-                fh.write("{:,}    ".format(area))
+                fh.write("{:,}\t".format(area))
             fh.write("{:,}\n".format(price))
             current_num_lines += 1
 
