@@ -35,7 +35,7 @@ class TestConvertToInt(object):
         assert actual == expected, "Expected: None, Actual: {0}".format(actual)
 
     def test_on_float_valued_string(self):
-        test_argument = "23,816.92"
+        test_argument = "6.92"
         expected = None
         actual = convert_to_int(test_argument)
         assert actual == expected, "Expected: None, Actual: {0}".format(actual)
