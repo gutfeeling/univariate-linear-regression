@@ -3,10 +3,10 @@ python:
   - "3.6"
 # command to install dependencies
 install:
-  - python setup.py install
+  - pip install -e .
   - pip install codecov pytest-cov
 # command to run tests
 script:
-  - pytest --cov-report term --cov=src tests
+  - pytest --cov=src tests
 after_success:
   - codecov
