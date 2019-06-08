@@ -93,40 +93,26 @@ class TestTrainModel(object):
         test_input = np.array([1.0, 2.0, 3.0, 4.0])
         with pytest.raises(ValueError) as exc_info:
             train_model(test_input)
-        expected_error_message_fragment = ("The training_set input must be two dimensional. "
-                                           "Got 1 dimensional array instead!"
-                                           )
-        actual_error_message = str(exc_info)
-        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
-                                                                               actual_error_message
-                                                                               )
-        assert expected_error_message_fragment in actual_error_message, message
+        expected_error_msg = "Argument training_set must be two dimensional. Got 1 dimensional array instead!"
+        assert exc_info.match(expected_error_msg)
 
     def test_on_one_row(self):
         test_input = np.array([[1382.0, 390167.0]])
         with pytest.raises(ValueError) as exc_info:
             train_model(test_input)
-        expected_error_message_fragment = ("The training_set input must have at least 2 rows for linear regression "
-                                           "to work, it actually has just 1"
-                                           )
-        actual_error_message = str(exc_info)
-        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
-                                                                               actual_error_message
-                                                                               )
-        assert expected_error_message_fragment in actual_error_message, message
+        expected_error_msg = ("Argument training_set must have at least 2 rows for linear regression "
+                              "to work, it actually has just 1"
+                              )
+        assert exc_info.match(expected_error_msg)
 
     def test_on_three_columns(self):
         test_input = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         with pytest.raises(ValueError) as exc_info:
             train_model(test_input)
-        expected_error_message_fragment = ("The training_set input must have 2 columns for univariate linear "
-                                           "regression. It actually has 3 columns"
-                                           )
-        actual_error_message = str(exc_info)
-        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
-                                                                               actual_error_message
-                                                                               )
-        assert expected_error_message_fragment in actual_error_message, message
+        expected_error_msg = ("Argument training_set must have 2 columns for univariate linear "
+                              "regression. It actually has 3 columns"
+                              )
+        assert exc_info.match(expected_error_msg)
 
 
 class TestModelTest(object):
@@ -162,27 +148,17 @@ class TestModelTest(object):
         test_input = np.array([1.0, 2.0, 3.0, 4.0])
         with pytest.raises(ValueError) as exc_info:
             model_test(test_input, 1.0, 1.0)
-        expected_error_message_fragment = ("The testing_set input must be two dimensional. "
-                                           "Got 1 dimensional array instead!"
-                                           )
-        actual_error_message = str(exc_info)
-        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
-                                                                               actual_error_message
-                                                                               )
-        assert expected_error_message_fragment in actual_error_message, message
+        expected_error_msg = "Argument testing_set must be two dimensional. Got 1 dimensional array instead!"
+        assert exc_info.match(expected_error_msg)
 
     def test_on_three_columns(self):
         test_input = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         with pytest.raises(ValueError) as exc_info:
             model_test(test_input, 1.0, 1.0)
-        expected_error_message_fragment = ("The testing_set input must have 2 columns for univariate linear "
-                                           "regression. It actually has 3 columns"
-                                           )
-        actual_error_message = str(exc_info)
-        message = "Expected message fragment: {0}, Actual message: {1}".format(expected_error_message_fragment,
-                                                                               actual_error_message
-                                                                               )
-        assert expected_error_message_fragment in actual_error_message, message
+        expected_error_msg = ("Argument testing_set must have 2 columns for univariate linear "
+                              "regression. It actually has 3 columns"
+                              )
+        assert exc_info.match(expected_error_msg)
 
 
 
