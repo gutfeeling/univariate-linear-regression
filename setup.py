@@ -2,7 +2,6 @@
 
 from setuptools import setup, find_packages
 
-# setup parameters
 setup(name="univariate_linear_regression",
       version="0.1.0",
       description="Univariate linear regression of housing price against housing area",
