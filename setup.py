@@ -14,6 +14,7 @@ setup(name="univariate_linear_regression",
                         "numpy==1.16.2",
                         "pytest==4.3.1",
                         "pytest-mpl==0.10",
+                        "pytest-mock==1.10.4",
                         "scipy==1.2.1",
                         ],
       )
