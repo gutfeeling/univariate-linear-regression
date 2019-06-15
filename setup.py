@@ -13,6 +13,7 @@ setup(name="univariate_linear_regression",
                         "matplotlib==3.0.3",
                         "numpy==1.16.2",
                         "pytest==4.3.1",
+                        "pytest-mpl==0.10",
                         "scipy==1.2.1",
                         ],
       )
