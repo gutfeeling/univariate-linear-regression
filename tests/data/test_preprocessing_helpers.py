@@ -21,11 +21,12 @@ def input_and_output_file(tmpdir):
 
 def row_to_list_side_effect(row):
     return_values = {"1,801\t201,411\n": ["1,801", "201,411"],
+                     "1,767565,112\n": None,
                      "2,002\t333,209\n": ["2,002", "333,209"],
+                     "1990\t782,911\n": ["1990", "782,911"],
+                     "1,285\t389129\n": ["1,285", "389129"],
                      }
-    if row in return_values:
-        return return_values[row]
-    return None
+    return return_values[row]
 
 
 def convert_to_int_side_effect(comma_separated_integer_string):
@@ -33,6 +34,10 @@ def convert_to_int_side_effect(comma_separated_integer_string):
                      "201,411": 201411,
                      "2,002": 2002,
                      "333,209": 333209,
+                     "1990": None,
+                     "782,911": 782911,
+                     "1,285": 1285,
+                     "389129": None,
                      }
     return return_values[comma_separated_integer_string]
 
@@ -121,7 +126,9 @@ class TestPreprocess(object):
                                                    call("1990\t782,911\n"),
                                                    call("1,285\t389129\n")
                                                    ]
-        assert convert_to_int_mock.call_args_list == [call("1,801"), call("201,411"), call("2,002"), call("333,209")]
+        assert convert_to_int_mock.call_args_list == [call("1,801"), call("201,411"), call("2,002"), call("333,209"),
+                                                      call("1990"),  call("782,911"), call("1,285"), call("389129")
+                                                      ]
         with open(output_file_path, "r") as f:
             lines = f.readlines()
         num_lines = len(lines)
