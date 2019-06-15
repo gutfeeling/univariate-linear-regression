@@ -6,21 +6,20 @@ def get_plot_for_best_fit_line(slope, intercept, x_array, y_array, title):
     x_array_ndim = x_array.ndim
     if not x_array_ndim == 1:
         raise ValueError("Argument x_array should be 1 dimensional. "
-                         "It actually is {0} dimensional with value {1}".format(x_array_ndim, x_array)
+                         "It actually is {0} dimensional".format(x_array_ndim)
                          )
     y_array_ndim = y_array.ndim
     if not y_array_ndim == 1:
         raise ValueError("Argument y_array should be 1 dimensional. "
-                         "It actually is {0} dimensional with value {1}".format(y_array_ndim, y_array)
+                         "It actually is {0} dimensional".format(y_array_ndim)
                          )
     x_array_length = x_array.shape[0]
     y_array_length = y_array.shape[0]
     if x_array_length != y_array_length:
         raise RuntimeError("Arguments x_array and y_array should have same length. "
-                           "But x_array has value {0} with length {1} "
-                           "and y_array has value {2} with length {3}".format(x_array, x_array_length,
-                                                                              y_array, y_array_length
-                                                                              )
+                           "But x_array has length {0} and y_array has length {1}".format(x_array_length,
+                                                                                          y_array_length
+                                                                                          )
                            )
     fig, ax = plt.subplots()
     ax.plot(x_array, y_array, ".")
