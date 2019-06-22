@@ -6,20 +6,20 @@ from data.preprocessing_helpers import convert_to_int, row_to_list, preprocess
 
 
 @pytest.fixture
-def input_and_output_file(tmpdir):
-    input_file_path = tmpdir.join("input_file.txt")
-    with open(input_file_path, "w") as f:
+def raw_and_clean_data_file(tmpdir):
+    raw_path = tmpdir.join("raw.txt")
+    clean_path = tmpdir.join("clean.txt")
+    with open(raw_path, "w") as f:
         f.write("1,801\t201,411\n"
                 "1,767565,112\n"
                 "2,002\t333,209\n"
                 "1990\t782,911\n"
                 "1,285\t389129\n"
                 )
-    output_file_path = tmpdir.join("output_file.txt")
-    return input_file_path, output_file_path
+    return raw_path, clean_path
 
 
-def row_to_list_side_effect(row):
+def row_to_list_bug_free(row):
     return_values = {"1,801\t201,411\n": ["1,801", "201,411"],
                      "1,767565,112\n": None,
                      "2,002\t333,209\n": ["2,002", "333,209"],
@@ -29,7 +29,7 @@ def row_to_list_side_effect(row):
     return return_values[row]
 
 
-def convert_to_int_side_effect(comma_separated_integer_string):
+def convert_to_int_bug_free(comma_separated_integer_string):
     return_values = {"1,801": 1801,
                      "201,411": 201411,
                      "2,002": 2002,
@@ -113,13 +113,13 @@ class TestRowToList(object):
 
 
 class TestPreprocess(object):
-    def test_on_raw_data(self, input_and_output_file, mocker):
-        input_file_path, output_file_path = input_and_output_file
-        row_to_list_mock = mocker.patch("data.preprocessing_helpers.row_to_list", side_effect=row_to_list_side_effect)
+    def test_on_raw_data(self, raw_and_clean_data_file, mocker):
+        raw_path, clean_path = raw_and_clean_data_file
+        row_to_list_mock = mocker.patch("data.preprocessing_helpers.row_to_list", side_effect=row_to_list_bug_free)
         convert_to_int_mock = mocker.patch("data.preprocessing_helpers.convert_to_int",
-                                           side_effect=convert_to_int_side_effect
+                                           side_effect=convert_to_int_bug_free
                                            )
-        preprocess(input_file_path, output_file_path)
+        preprocess(raw_path, clean_path)
         assert row_to_list_mock.call_args_list == [call("1,801\t201,411\n"),
                                                    call("1,767565,112\n"),
                                                    call("2,002\t333,209\n"),
@@ -129,13 +129,10 @@ class TestPreprocess(object):
         assert convert_to_int_mock.call_args_list == [call("1,801"), call("201,411"), call("2,002"), call("333,209"),
                                                       call("1990"),  call("782,911"), call("1,285"), call("389129")
                                                       ]
-        with open(output_file_path, "r") as f:
+        with open(clean_path, "r") as f:
             lines = f.readlines()
-        num_lines = len(lines)
-        assert num_lines == 2, "Output file should have 2 lines, it actually has {0} lines".format(num_lines)
         first_line = lines[0]
-        assert first_line == "1801\t201411\n", "Expected: '1801\\t201411\\n', Actual: {0}".format(repr(first_line))
+        assert first_line == "1801\t201411\n"
         second_line = lines[1]
-        assert second_line == "2002\t333209\n", "Expected: '2002\\t333209\\n', Actual: {0}".format(repr(second_line))
-
+        assert second_line == "2002\t333209\n"
 

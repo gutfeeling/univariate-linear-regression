@@ -8,7 +8,7 @@ from features.as_numpy import get_data_as_numpy_array
 
 @pytest.fixture
 def clean_data_file_path():
-    file_path = "clean_data_file.txt"
+    file_path = "clean.txt"
     with open(file_path, "w") as f:
         f.write("201\t305671\n"
                 "7892\t298140\n"
@@ -31,8 +31,8 @@ def dirty_data_file_path():
 
 
 @pytest.fixture
-def empty_file_path():
-    file_path = "empty_file.txt"
+def empty_file():
+    file_path = "empty.txt"
     open(file_path, "w").close()
     yield file_path
     os.remove(file_path)
@@ -47,9 +47,9 @@ class TestGetDataAsNumpyArray(object):
                    )
         assert actual == pytest.approx(expected), message
 
-    def test_on_empty_file(self, empty_file_path):
+    def test_on_empty_file(self, empty_file):
         expected = np.empty((0, 2))
-        actual = get_data_as_numpy_array(empty_file_path, 2)
+        actual = get_data_as_numpy_array(empty_file, 2)
         message = ("get_data_as_numpy_array({0}) should return {1}, "
                    "but it actually returned {2}".format(clean_data_file_path, expected, actual)
                    )

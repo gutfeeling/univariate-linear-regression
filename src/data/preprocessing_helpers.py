@@ -20,10 +20,10 @@ def row_to_list(row):
     return None
 
 
-def preprocess(input_file_path, output_file_path):
-    with open(input_file_path, "r") as input_file:
+def preprocess(raw_data_file_path, clean_data_file_path):
+    with open(raw_data_file_path, "r") as input_file:
         rows = input_file.readlines()
-    with open(output_file_path, "w") as output_file:
+    with open(clean_data_file_path, "w") as output_file:
         for row in rows:
             row_as_list = row_to_list(row)
             if row_as_list is None:
