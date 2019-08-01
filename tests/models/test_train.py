@@ -23,39 +23,6 @@ class TestSplitIntoTrainingAndTestingSets(object):
         assert actual[1].shape[0] == expected_length_testing_set, \
                "The actual number of rows in the testing array is not 2"
 
-    def test_on_eight_rows(self):
-        test_argument = np.array([[2081.0, 314942.0],
-                               [1059.0, 186606.0],
-                               [1148.0, 206186.0],
-                               [1506.0, 248419.0],
-                               [1210.0, 214114.0],
-                               [1697.0, 277794.0],
-                               [1382.0, 390167.0],
-                               [8261.0, 911582.0],
-                               ]
-                              )
-        expected_length_training_set = 6
-        expected_length_testing_set = 2
-        actual = split_into_training_and_testing_sets(test_argument)
-        assert actual[0].shape[0] == expected_length_training_set, \
-               "The actual number of rows in the training array is not 6"
-
-        assert actual[1].shape[0] == expected_length_testing_set, \
-               "The actual number of rows in the testing array is not 2"
-
-    def test_on_two_rows(self):
-        test_argument = np.array([[1382.0, 390167.0],
-                               [8261.0, 911582.0],
-                               ]
-                              )
-        expected_length_training_set = 1
-        expected_length_testing_set = 1
-        actual = split_into_training_and_testing_sets(test_argument)
-        assert actual[0].shape[0] == expected_length_training_set, \
-               "The actual number of rows in the training array is not 1"
-        assert actual[1].shape[0] == expected_length_testing_set, \
-               "The actual number of rows in the testing array is not 1"
-
     def test_on_one_row(self):
         test_argument = np.array([[1382.0, 390167.0]])
         with pytest.raises(ValueError) as exc_info:
@@ -89,34 +56,18 @@ class TestTrainModel(object):
         assert actual_slope == pytest.approx(expected_slope), slope_message
         assert actual_intercept == pytest.approx(expected_intercept), intercept_message
 
-    def test_on_one_dimensional_array(self):
-        test_argument = np.array([1.0, 2.0, 3.0, 4.0])
-        with pytest.raises(ValueError) as exc_info:
-            train_model(test_argument)
-        expected_error_msg = "Argument training_set must be two dimensional. Got 1 dimensional array instead!"
-        assert exc_info.match(expected_error_msg)
-
-    def test_on_one_row(self):
-        test_argument = np.array([[1382.0, 390167.0]])
-        with pytest.raises(ValueError) as exc_info:
-            train_model(test_argument)
-        expected_error_msg = ("Argument training_set must have at least 2 rows for linear regression "
-                              "to work, it actually has just 1"
-                              )
-        assert exc_info.match(expected_error_msg)
-
-    def test_on_three_columns(self):
-        test_argument = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-        with pytest.raises(ValueError) as exc_info:
-            train_model(test_argument)
-        expected_error_msg = ("Argument training_set must have 2 columns for univariate linear "
-                              "regression. It actually has 3 columns"
-                              )
-        assert exc_info.match(expected_error_msg)
+    def test_on_positively_correlated_data(self):
+        test_argument = np.array([[1.0, 4.0], [2.0, 4.0],
+                                  [3.0, 9.0], [4.0, 10.0],
+                                  [5.0, 7.0], [6.0, 13.0],
+                                  ]
+                                 )
+        actual_slope, actual_intercept = train_model(test_argument)
+        assert actual_slope > 0, "Expected slope: > 0, Actual slope: {0}".format(actual_slope)
 
 
 class TestModelTest(object):
-    def test_on_linear_data(self):
+    def test_on_perfect_fit(self):
         test_argument = np.array([[1.0, 3.0], [2.0, 5.0], [3.0, 7.0]])
         expected = 1.0
         actual = model_test(test_argument, 2.0, 1.0)
@@ -127,37 +78,25 @@ class TestModelTest(object):
         assert actual == pytest.approx(expected), message
 
     def test_on_circular_data(self):
-        theta = pi/4.0
-        test_argument = np.array([[cos(theta), sin(theta)],
-                               [cos(2 * theta), sin(2 * theta)],
-                               [cos(3 * theta), sin(3 * theta)],
-                               [cos(4 * theta), sin(4 * theta)],
-                               [cos(5 * theta), sin(5 * theta)],
-                               [cos(6 * theta), sin(6 * theta)],
-                               [cos(7 * theta), sin(7 * theta)],
-                               [cos(8 * theta), sin(8 * theta)],
-                               ]
-                              )
+        theta = pi / 4.0
+        test_argument = np.array([[0.0, 1.0],
+                                  [cos(theta), sin(theta)],
+                                  [1.0, 0.0],
+                                  [cos(3 * theta), sin(3 * theta)],
+                                  [0.0, -1.0],
+                                  [cos(5 * theta), sin(5 * theta)],
+                                  [-1.0, 0.0],
+                                  [cos(7 * theta), sin(7 * theta)]
+                                  ]
+                                 )
         actual = model_test(test_argument, 0.0, 0.0)
-        message = ("model_test() should return 0 on circular data with center at 0 and fitted line y = 0, "
-                   "it actually returned {0}".format(actual)
-                   )
-        assert actual == pytest.approx(0.0), message
+        assert actual == pytest.approx(0.0)
 
     def test_on_one_dimensional_array(self):
         test_argument = np.array([1.0, 2.0, 3.0, 4.0])
         with pytest.raises(ValueError) as exc_info:
             model_test(test_argument, 1.0, 1.0)
         expected_error_msg = "Argument testing_set must be two dimensional. Got 1 dimensional array instead!"
-        assert exc_info.match(expected_error_msg)
-
-    def test_on_three_columns(self):
-        test_argument = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-        with pytest.raises(ValueError) as exc_info:
-            model_test(test_argument, 1.0, 1.0)
-        expected_error_msg = ("Argument testing_set must have 2 columns for univariate linear "
-                              "regression. It actually has 3 columns"
-                              )
         assert exc_info.match(expected_error_msg)
 
 
