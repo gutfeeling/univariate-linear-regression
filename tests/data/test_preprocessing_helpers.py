@@ -78,6 +78,14 @@ class TestConvertToInt(object):
         expected = None
         actual = convert_to_int(test_argument)
         assert actual == expected, "Expected: None, Actual: {0}".format(actual)
+        
+        ## Added by Trevor!!!! 
+    def test_on_negative(self):
+        print("Trevor's test!!! OMG")
+        test_argument = "-1,099"
+        expected = -1099
+        actual = convert_to_int(test_argument)
+        assert actual == expected, "Expected: -1099, Actual: {0}".format(actual)
 
 
 class TestRowToList(object):
